@@ -5,11 +5,12 @@ months = []
 budgetPerMonth = []
 totalMonths = 0 
 totalAmt = 0 
-changeAmt = 0
+PLAmt = []
+previousAmt = 0
+changeAmt = []
 averageChange = 0
 
 # Read in the cvs and add values to lists
-
 budget_csv = os.path.join("..", "Resources", "budget_data.csv")
 
 
@@ -20,38 +21,52 @@ with open(budget_csv,encoding='utf-8-sig') as csvfile:
 
     # Read the header row first (skip this step if there is no header)
     csv_header = next(csvreader)
-    print(f"CSV Header: {csv_header}")
 
     # Read each row of data after the header
+    # loop through the file to calc totalMonths, totalAmt, changeAmt and averageChange
+
     for row in csvreader:
-            print(row)
             months.append(row[0])
-            budgetPerMonth.append(row[1])
+            budgetPerMonth.append(int(row[1]))
+            # Calculate the total number of months included in the dataset
             totalMonths = totalMonths + 1
+            print(totalMonths)
+            # Calculate the net total amount of "Profit/Losses" over the entire period
             totalAmt = totalAmt + (int(row[1]))
 
+            # Put the budget profit-loss field into a list for processing later
+           # If int(totalMonths) > 2:
+                #previousAmt = budgetPerMonth[0]
+                #PLAmt = budgetPerMonth.[totalMonths] - previousAmt
 
-print(totalMonths)
-print(totalAmt)
+            #if row[1] == previousAmt: 
+            #print(int(row[1]).next())
+            #PLAmt.append((row[1]))
+            #print(PLAmt)
+            #print(previousAmt)
+
+            #changeAmt.append(rowChange)          
 
 
-# loop through the file to calc totalMonths, totalAmt, changeAmt and averageChange
+print(str(budgetPerMonth[5]))
 
-# Calculate the total number of months included in the dataset
-# Calculate the net total amount of "Profit/Losses" over the entire period
-# Calculate the changes in "Profit/Losses" over the entire period, then find the average of those changes
+# Calc Average Change
+averageChange = totalAmt/totalMonths
+
 # The greatest increase in profits (date and amount) over the entire period
 # The greatest decrease in profits (date and amount) over the entire period
 
-
 # print the results 
+print("\n")
 print("Financial Analysis")
 print("----------------------------")
 print(f"Total Months: {totalMonths}")
 print(f"Total: {totalAmt}")
-print(f"Average  Change: ")
+print(f"Average  Change: {averageChange}")
 print(f"Greatest Increase in Profits:  ")
 print(f"Greatest Decrease in Profits:  ")
+print("\n")
+print("\n")
 
 #Export results to a file 
 
@@ -67,11 +82,10 @@ print(f"Greatest Decrease in Profits:  ")
     # # Write the output to the file 
     # csvwriter.writerow(["Financial Analysis"])
     # csvwriter.writerow(["----------------------------"])
-    # csvwriter.writerow(["Total Months: 86"])
-    # csvwriter.writerow(["Total: $38382578"])
-    # csvwriter.writerow(["Average  Change: $-2315.12"])
+    # csvwriter.writerow([Total Months: {totalMonths}")
+    # csvwriter.writerow(["Total: {totalAmt}")
+    # csvwriter.writerow(["Average  Change: {averageChange}")
     # csvwriter.writerow(["Greatest Increase in Profits: Feb-2012 ($1926159) "])
     # csvwriter.writerow(["Greatest Decrease in Profits: Sep-2013 ($-2196167) "])
     
-
 
