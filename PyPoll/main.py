@@ -1,21 +1,11 @@
 import os
 import csv
 
-votorid = []
-county = []
-candidate = []
-totalVotes = 0
-summaryCandidate = []
-summaryCandidateVotes = []
-totalCandidates = 0
-i = 0
+# List of all of the candidates extracted from the csv 
+candidate = [] 
+total_votes = 0
+summaryCandidateList = []
 
-
-# Python has a function called 'set()' which will return a list of all unique 
-# values within another list, all lists in Python also have a method called 
-# 'count()' which will count all instances of a value within that list, and 
-# of course there's the 'len()' function to find the total list length. 
-# If you had a for-loop and a list that was just candidate names repeated for each vote...
 
 # Read in the cvs and add values to lists
 election_csv = os.path.join("..", "Resources", "election_data.csv")
@@ -28,53 +18,57 @@ with open(election_csv,encoding='utf-8-sig') as csvfile:
     # Read the header row first (skip this step if there is no header)
     csv_header = next(csvreader)
 
-    # Read each row of data after the header
-    # loop through the file and build a dict of poll results 
-
+    # Read each row of data after the header and build the candidate list
+    # Keep track of the total votes in total_votes
     for row in csvreader:        
-            votorid.append(row[0])
-            county.append(row[1])
             candidate.append(row[2])
-            totalVotes = totalVotes + 1
+            total_votes = total_votes + 1
 
-            #add the votes to the vote count for the candidate 
-            #for the current candidate, if the candidate matches a candidate in the list, add 1
-            # else add the candidates name to end of the summary list and add 1 to the count 
 
-            if totalCandidates == 0: 
-                summaryCandidate.append(candidate)
-                summaryCandidateVotes.append(1)
-                totalCandidates = totalCandidates + 1
-                print(summaryCandidate)
-                print(summaryCandidateVotes)
-            
-            else:
-                print(totalCandidates)
-                print(i)
-                print(candidate[totalVotes-1])
-                print(summaryCandidate[i])
+#Build a dict of summary candidates - candidate name and vote counts 
 
-            i = i + 1
-            totalCandidates = totalCandidates + 1
+summaryCandidateList = list(set(candidate))
+vote_counts_dict ={}
+for item in summaryCandidateList:
+    vote_counts_dict[item] = candidate.count(item)
 
-                # for i in range(totalCandidates):
-                #     if candidate[totalVotes-1] == summaryCandidate[i]: 
-                #         summaryCandidateVotes[i] = summaryCandidateVotes[i] + 1
-                #     else:
-                #         summaryCandidate.append(candidate)
-                #         summaryCandidateVotes.append(1)            
-                #         totalCandidates = totalCandidates + 1
-
+# Find the winner using the max function 
+max_votes = max(vote_counts_dict, key=vote_counts_dict.get)
 
 # print the results 
 print("\n")
-print("----------------------------")
+print("------------------------------------------")
 print("Election Results")
-print("----------------------------")
-print(f"Total Votes {totalVotes}")
-print("----------------------------")
-print(f"Total Candidates {totalCandidates}")
+print("------------------------------------------")
+print(f"Total Votes : {total_votes}")
+print("------------------------------------------")
+# need to add the candiate list here in a loop 
+for key, value in vote_counts_dict.items():
+    print(key,':', value, ' ', "{:.0%}".format(round((value/total_votes),2)))
+print("------------------------------------------")
 print("Winner")
-print("----------------------------")
+print(max_votes)
+print("------------------------------------------")
 print("\n")
 print("\n") 
+
+output_path = os.path.join("..", "analysis", "PyPollResults.csv")
+
+with open(output_path, 'w', newline='') as datafile:
+    # Initialize csv.write
+    writer = csv.writer(datafile)
+
+    # Write the header row
+    writer.writerow(["------------------------------------------"])
+    writer.writerow(["Election Results"])
+    writer.writerow(["------------------------------------------"])
+    writer.writerow(["Total Votes :",total_votes])
+    writer.writerow(["------------------------------------------"])
+    for key, value in vote_counts_dict.items():
+        writer.writerow([key,':', value,  "{:.0%}".format(round((value/total_votes),2))])
+    writer.writerow(["------------------------------------------"])
+    writer.writerow(["Winner"])
+    writer.writerow([max_votes])
+    writer.writerow(["------------------------------------------"])
+
+
